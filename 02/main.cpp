@@ -28,12 +28,6 @@ private:
     int apartment = 0;
     string full_address;
 };
-string* create_address_array(int address_quantity)
-{
-    string* address_array = new string[address_quantity]{};
-
-    return address_array;
-}
 
 void write_data(Address** arrayForClassObjects, int address_quantity)
 {
