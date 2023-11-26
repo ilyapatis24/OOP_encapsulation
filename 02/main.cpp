@@ -6,15 +6,8 @@ using namespace std;
 
 class Address
 {
-private:
-    string city;
-    string street;
-    int house = 0;
-    int apartment = 0;
-    string full_address;
-
 public:
-    Address(string city, string street, int house, int apartment) : city(city), street(street), house(house), apartment(apartment)
+    Address(string& city, string& street, int& house, int& apartment) : city(city), street(street), house(house), apartment(apartment)
     {
     }
 
@@ -22,10 +15,27 @@ public:
         full_address = city + ", " + street + ", " + std::to_string(house)
             + ", " + std::to_string(apartment);
         return full_address;
-    };
-};
+    }
 
-void write_data(string* arrayForClassObjects, int address_quantity)
+    string get_city() {
+        return city;
+    }
+
+private:
+    string city;
+    string street;
+    int house = 0;
+    int apartment = 0;
+    string full_address;
+};
+string* create_address_array(int address_quantity)
+{
+    string* address_array = new string[address_quantity]{};
+
+    return address_array;
+}
+
+void write_data(Address** arrayForClassObjects, int address_quantity)
 {
     ofstream file_output("out.txt");
 
@@ -42,33 +52,30 @@ void write_data(string* arrayForClassObjects, int address_quantity)
 
     for (int i = 0; i < address_quantity; i++)
     {
-        file_output << arrayForClassObjects[i] << endl;
+        file_output << arrayForClassObjects[i]->make_address() << endl;
     }
     file_output.close();
 
 };
 
-void sort(string* array_ptr, int address_quantity) {
-    {
-        bool swapped = false;
-        do {
-            swapped = false;
-            std::string tmp;
-
-            for (int i = 0; i < address_quantity; i++) {
-                if (array_ptr[i - 1] > array_ptr[i])
-                {
-                    tmp = array_ptr[i];
-                    array_ptr[i] = array_ptr[i - 1];
-                    array_ptr[i - 1] = tmp;
-                    swapped = true;
-                }
+void sort(Address** address, int size) {
+    for (int i = 0; i < size - 1; i++) {
+        for (int j = 0; j < size - i - 1; j++) {
+            char a = address[j]->get_city()[0];
+            char b = address[j + 1]->get_city()[0];
+            if (a > b) {
+                Address* temp = address[j];
+                address[j] = address[j + 1];
+                address[j + 1] = temp;
             }
-        } while (swapped);
+        }
     }
 }
 
-void clear_memory(string* array_ptr) {
+void clear_memory(Address** array_ptr, int size) {
+    for (int i = 0; i < size; i++) {
+        delete array_ptr[i];
+    }
     delete[] array_ptr;
 }
 
@@ -91,17 +98,16 @@ int main(int argc, char** argv)
         cout << "Ошибка открытия файла in.txt." << endl;
     }
     file_input >> address_quantity;
-    string* arrayForClassObjects = new string[address_quantity];
+    Address** arrayForClassObjects = new Address*[address_quantity];
     while (!file_input.eof()) {
         for (int i = 0; i < address_quantity; i++) {
             file_input >> NameCity >> NameStreet >> NumberHouse >> NumberApartment;
-            Address address(NameCity, NameStreet, NumberHouse, NumberApartment);
-            arrayForClassObjects[i] = address.make_address();
+            arrayForClassObjects[i] = new Address(NameCity, NameStreet, NumberHouse, NumberApartment);
         }
     }
     file_input.close();
     sort(arrayForClassObjects, address_quantity);
     write_data(arrayForClassObjects, address_quantity);
-    clear_memory(arrayForClassObjects);
+    clear_memory(arrayForClassObjects, address_quantity);
     return 0;
 }

@@ -6,13 +6,6 @@ using namespace std;
 
 class Address
 {
-private:
-    string city;
-    string street;
-    int house = 0;
-    int apartment = 0;
-    string full_address;
-
 public:
     Address(string& city, string& street, int& house, int& apartment): city(city), street(street), house(house), apartment(apartment)
     {
@@ -22,7 +15,13 @@ public:
        full_address = city + ", " + street + ", " + std::to_string(house)
             + ", " + std::to_string(apartment);
         return full_address;
-    };
+    }
+private:
+    string city;
+    string street;
+    int house = 0;
+    int apartment = 0;
+    string full_address;
 };
 
 void write_data(Address** arrayForClassObjects, int address_quantity)
