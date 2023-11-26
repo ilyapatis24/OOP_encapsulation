@@ -14,7 +14,7 @@ private:
     string full_address;
 
 public:
-    Address(string city, string street, int house, int apartment): city(city), street(street), house(house), apartment(apartment)
+    Address(string& city, string& street, int& house, int& apartment): city(city), street(street), house(house), apartment(apartment)
     {
     }
 
@@ -25,14 +25,7 @@ public:
     };
 };
 
-string* create_address_array(int address_quantity)
-{
-    string* address_array = new string[address_quantity]{};
-
-    return address_array;
-}
-
-void write_data(string* arrayForClassObjects, int address_quantity)
+void write_data(Address** arrayForClassObjects, int address_quantity)
 {
     ofstream file_output("out.txt");
 
@@ -49,13 +42,16 @@ void write_data(string* arrayForClassObjects, int address_quantity)
 
     for (int i = address_quantity-1; i >= 0; i--)
     {
-        file_output << arrayForClassObjects[i] << endl;
+        file_output << arrayForClassObjects[i]->make_address() << endl;
     }
     file_output.close();
 
 };
 
-void clear_memory(string* array_ptr) {
+void clear_memory(Address** array_ptr, int size) {
+    for (int i = 0; i < size; i++) {
+        delete array_ptr[i];
+    }
     delete[] array_ptr;
 }
 
@@ -78,16 +74,15 @@ int main(int argc, char** argv)
         cout << "Ошибка открытия файла in.txt." << endl;
     }
     file_input >> address_quantity;
-    string* arrayForClassObjects = create_address_array(address_quantity);
+    Address** arrayForClassObjects = new Address*[address_quantity];
     while (!file_input.eof()) {
         for (int i = 0; i < address_quantity; i++) {
             file_input >> NameCity >> NameStreet >> NumberHouse >> NumberApartment;
-            Address address(NameCity, NameStreet, NumberHouse, NumberApartment);
-            arrayForClassObjects[i] = address.make_address();
+            arrayForClassObjects[i] = new Address(NameCity, NameStreet, NumberHouse, NumberApartment);
         }
     }
     file_input.close();
     write_data(arrayForClassObjects, address_quantity);
-    clear_memory(arrayForClassObjects);
+    clear_memory(arrayForClassObjects, address_quantity);
     return 0;
 }
