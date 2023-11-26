@@ -25,6 +25,13 @@ public:
     };
 };
 
+string* create_address_array(int address_quantity)
+{
+    string* address_array = new string[address_quantity]{};
+
+    return address_array;
+}
+
 void write_data(string* arrayForClassObjects, int address_quantity)
 {
     ofstream file_output("out.txt");
@@ -40,7 +47,7 @@ void write_data(string* arrayForClassObjects, int address_quantity)
 
     file_output << address_quantity << endl;
 
-    for (int i = 0; i < address_quantity; i++)
+    for (int i = address_quantity-1; i >= 0; i--)
     {
         file_output << arrayForClassObjects[i] << endl;
     }
@@ -71,7 +78,7 @@ int main(int argc, char** argv)
         cout << "Ошибка открытия файла in.txt." << endl;
     }
     file_input >> address_quantity;
-    string* arrayForClassObjects = new string[address_quantity];
+    string* arrayForClassObjects = create_address_array(address_quantity);
     while (!file_input.eof()) {
         for (int i = 0; i < address_quantity; i++) {
             file_input >> NameCity >> NameStreet >> NumberHouse >> NumberApartment;
